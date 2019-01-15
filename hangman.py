@@ -32,10 +32,10 @@ def boardInit():
     return hangmanBoard
 
 
-def drawBoard(hangmanBoard, errorNum, errorLetter=None):
+def drawBoard(hangmanBoard, errorNum, errorLetter=None, win=False):
 
     if errorLetter != None:
-        hangmanBoard[0][errorNum-1] = errorLetter
+        hangmanBoard[0][errorNum - 1] = errorLetter
 
     # if errorNum 1
     if errorNum >= 1:
@@ -56,19 +56,24 @@ def drawBoard(hangmanBoard, errorNum, errorLetter=None):
             hangmanBoard[i][19] = "'|"
 
         # underline lips
-        # hangmanBoard[4][17] = u"\u23DC"
-        hangmanBoard[4][17] = "_"
-        # hangmanBoard[4][17] = u"\u23D1"
+        if win:
+            hangmanBoard[4][17] = u"\u23D1"
+        elif win == False and errorNum == 6:
+            hangmanBoard[4][17] = u"\u23DC"
+        else:
+            hangmanBoard[4][17] = "_"
 
         # if errorNum 2
     if errorNum >= 2:
         # hands
-        hangmanBoard[7][17] = "/"
-        hangmanBoard[7][19] = "\\"
-        # hangmanBoard[7][17] = "\\"
-        # hangmanBoard[7][19] = "/"
+        if win:
+            hangmanBoard[7][17] = "\\"
+            hangmanBoard[7][19] = "/"
+        else:
+            hangmanBoard[7][17] = "/"
+            hangmanBoard[7][19] = "\\"
 
-        # if errorNum 3
+    # if errorNum 3
     if errorNum >= 3:
         # legs
         hangmanBoard[10][17] = "/"
@@ -106,9 +111,13 @@ def drawBoard(hangmanBoard, errorNum, errorLetter=None):
     except:
         system('cls')  # for windows
 
-    print("You are " + str(6 - errorNum) + " moves away from hanging the man!\n")
-    print("Mistakes:")
+    if not win:
+        print("You are " + str(6 - errorNum) +
+              " moves away from hanging the man!\n")
+    else:
+        print()
 
+    print("Mistakes:")
 
     for i in hangmanBoard:
 
@@ -121,18 +130,17 @@ def drawBoard(hangmanBoard, errorNum, errorLetter=None):
     print("")
 
 
-gameBoard = boardInit()
-
-# for i in range(7):
-#     drawBoard(gameBoard, i)
-#     sleep(1)
-
-
 def gameRun():
 
-    wordToGuess = list(input("Select your word: ").upper())
     toPrintOut = []
     errorNum = 0
+    win = True
+
+    wordToGuess = list(input("Select your word: ").upper())
+
+    if len(wordToGuess) < 3:
+        print("The word must contain at least 3 letters")
+        return gameRun()
 
     for i in range(len(wordToGuess)):
         if wordToGuess[i] is " ":
@@ -162,13 +170,33 @@ def gameRun():
 
         if not found:
             errorNum += 1
-
-        drawBoard(gameBoard, errorNum, decision + " ")
+            drawBoard(gameBoard, errorNum, decision + " ")
+        else:
+            drawBoard(gameBoard, errorNum)
 
         for i in toPrintOut:
             print(i, end=" ")
 
         print("\n\n\n")
 
+        for i in range(len(toPrintOut)):
+            if toPrintOut[i] != wordToGuess[i]:
+                win = False
+                break
+            else:
+                win = True
 
+        if win:
+            drawBoard(gameBoard, 4, None, True)
+            for i in toPrintOut:
+                print(i, end=" ")
+
+            print("\n")
+
+            print("Good Job, you did it!")
+
+            return True
+
+
+gameBoard = boardInit()
 gameRun()
