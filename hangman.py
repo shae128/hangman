@@ -198,5 +198,17 @@ def gameRun():
             return True
 
 
+def defineWordList():
+    wordsList = []
+    with open("words.txt") as words:
+        word = words.readline()
+        while word != "":
+            wordsList.append(word.rstrip())
+            word = words.readline()
+
+    return wordsList
+
+
+# print(defineWordList())
 gameBoard = boardInit()
 gameRun()
