@@ -57,13 +57,13 @@ def boardInit():
     for i in range(5):
         hangmanBoard[13][i] = "_"
 
-    # vertical lines, left
-    for i in range(2, 14):
-        hangmanBoard[i][1] = "|"
-
     # horizontal over lines, top
     for i in range(22):
         hangmanBoard[2][i] = u"\u203E"
+
+    # vertical lines, left
+    for i in range(2, 14):
+        hangmanBoard[i][1] = "|"
 
     # horizontal over lines, base
     for i in range(16, 22):
